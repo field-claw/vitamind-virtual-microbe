@@ -12,6 +12,7 @@ zero-dependency Python wrapper and a fail-closed `verify.py` (clone-and-run,
 | 1 | *Aspergillus niger* | iJB1325 / ATCC 1015 (BiGG) | 0.9399 h⁻¹ | `field-claw/aniger-pilot` → `models/genome_scale/iJB1325/` | published full GEM |
 | 2 | *S. cerevisiae* | ecYeastGEM (BiGG, GECKO) | 0.087974 h⁻¹ | `field-claw/ecYeastGEM-yeast-pilot` | published full GEM |
 | 3 | *A. niger* | aniger_ccm (curated, in-house) | 18.95 (model units, **not** h⁻¹) | `field-claw/aniger-pilot` → `models/curated_ccm/` | curated CCM · real BIOMASS · carbon guardrail 100% · phosphate-switch citrate phenotype |
+| 4 | *Escherichia coli* K-12 MG1655 | iML1515 (BiGG) | 0.8698 h⁻¹ | `field-claw/ecoli-pilot` | published full GEM · fail-closed species-assertion gate (7/7) — the genuine E. coli entry |
 
 Entries 1 and 3 are the **same organism at two scales** and now live in one
 repo, `field-claw/aniger-pilot`, linked by an explicit annotation crosswalk
@@ -73,13 +74,19 @@ Two rules learned the hard way, now enforced in code:
    every condition — a false negative that made a real phenotype look absent.
    Overflow must be solved as its own objective with a growth floor.
 
-## Not yet published
+## E. coli — now published (the genuine entry)
 
-A genuine *E. coli* pilot is **not** released. The only local *E. coli* model
-file (`eciML1515`) fails SBML validation under COBRApy, and the previously
-published "E. coli" pilot turned out to be *A. niger*. No *E. coli* repo will
-be published until a model is independently species-verified and its
-`verify.py` organism assertion passes.
+`field-claw/ecoli-pilot` ships the real *Escherichia coli* K-12 MG1655 model
+**iML1515** from BiGG (taxonomy 511145, 5883 rxn / 1877 met / 1516 gene,
+WT growth ≈ 0.87 h⁻¹). It directly answers the mislabel lesson: its
+`verify.py` carries an organism assertion (`L4`) that fails closed if the model
+is not *E. coli* or if any foreign-organism identifier (*Aspergillus*,
+*Saccharomyces*) appears, plus a growth-unit sanity check (`L6`) that rejects
+model-unit artifacts. Verified end-to-end from a clean download: **7/7 PASS**.
+
+The earlier "E. coli" pilot (iJB1325) was *A. niger* and is archived as
+`ijb1325-aniger-archive`; the correction note above documents exactly how the
+mistake was caught and prevented from recurring.
 
 ## License
 
